@@ -6,8 +6,18 @@ import 'package:quote_repository/src/mappers/mappers.dart';
 import 'package:quote_repository/src/quote_local_storage.dart';
 
 class QuoteRepository {
-
   // TODO: Add constructor and data sources properties.
+  QuoteRepository({
+    required KeyValueStorage keyValueStorage,
+    required this.remoteApi,
+    @visibleForTesting QuoteLocalStorage? localStorage,
+  }) : _localStorage = localStorage ??
+            QuoteLocalStorage(
+              keyValueStorage: keyValueStorage,
+            );
+
+  final FavQsApi remoteApi;
+  final QuoteLocalStorage _localStorage;
 
   Stream<QuoteListPage> getQuoteListPage(
     int pageNumber, {
