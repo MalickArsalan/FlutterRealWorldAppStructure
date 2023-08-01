@@ -26,7 +26,71 @@ class QuoteRepository {
     String? favoritedByUsername,
     required QuoteListPageFetchPolicy fetchPolicy,
   }) async* {
-    throw UnimplementedError();
+    final isFilteringByTag = tag != null;
+    final isSearching = searchTerm.isNotEmpty;
+    final isFetchPolicyNetworkOnly =
+        fetchPolicy == QuoteListPageFetchPolicy.networkPreferably;
+
+    // 1
+    final shouldSkipCacheLookup =
+        isFilteringByTag || isSearching || isFetchPolicyNetworkOnly;
+    if (shouldSkipCacheLookup) {
+      // 2
+      final freshPage = await _getQuoteListPageFromNetwork(
+        pageNumber,
+        tag: tag,
+        searchTerm: searchTerm,
+        favouritedByUsername: favoritedByUsername,
+      );
+      // 3
+      yield freshPage;
+    } else {
+      // TODO: Cover other fetch policies
+      final isFilteringByFavorites = favoritedByUsername != null;
+
+      final cachedPage = await _localStorage.getQuoteListPage(
+        pageNumber,
+        // 1
+        isFilteringByFavorites,
+      );
+
+      final isFetchPolicyCacheAndNetwork =
+          fetchPolicy == QuoteListPageFetchPolicy.cacheAndNetwork;
+
+      final isFetchPolicyCachePreferably =
+          fetchPolicy == QuoteListPageFetchPolicy.cachePreferably;
+
+      // 2
+      final shouldEmitCachedPageInAdvance =
+          isFetchPolicyCacheAndNetwork || isFetchPolicyCachePreferably;
+
+      if (shouldEmitCachedPageInAdvance && cachedPage != null) {
+        // 3
+        yield cachedPage.toDomainModel();
+        // 4
+        if (isFetchPolicyCachePreferably) {
+          return;
+        }
+      }
+      // TODO: Call the remote API
+      try {
+        final freshPage = await _getQuoteListPageFromNetwork(
+          pageNumber,
+          favouritedByUsername: favoritedByUsername,
+        );
+
+        yield freshPage;
+      } catch (_) {
+        // 1
+        final isFetchPolicyNetworkPreferably =
+            fetchPolicy == QuoteListPageFetchPolicy.networkPreferably;
+        if (cachedPage != null && isFetchPolicyNetworkPreferably) {
+          yield cachedPage.toDomainModel();
+        }
+        // 2
+        rethrow;
+      }
+    }
   }
 
   /**
