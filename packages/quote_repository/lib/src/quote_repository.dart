@@ -29,6 +29,59 @@ class QuoteRepository {
     throw UnimplementedError();
   }
 
+  /**
+   * Network Only Policy
+   * Also Populating the cache if: 
+      * The api runs for the first time
+      * No filter is applied
+      * Cache should be empty if page number == 1
+   *  
+  */
+  ///
+
+  // 1
+  Future<QuoteListPage> _getQuoteListPageFromNetwork(
+    int pageNumber, {
+    Tag? tag,
+    String searchTerm = '',
+    String? favouritedByUsername = '',
+  }) async {
+    try {
+      // 2
+      final apiPage = await remoteApi.getQuoteListPage(
+        pageNumber,
+        tag: tag?.toRemoteModel(),
+        searchTerm: searchTerm,
+        favoritedByUsername: favouritedByUsername,
+      );
+
+      final isFiltering = tag != null || searchTerm.isNotEmpty;
+      final favoritesOnly = favouritedByUsername != null;
+
+      final shouldStoreOnCache = !isFiltering;
+      // 3
+      if (shouldStoreOnCache) {
+        // 4
+        final shouldEmptyCache = pageNumber == 1;
+        if (shouldEmptyCache) {
+          await _localStorage.clearQuoteListPageList(favoritesOnly);
+        }
+
+        final cachePage = apiPage.toCacheModel();
+        await _localStorage.upsertQuoteListPage(
+          pageNumber,
+          cachePage,
+          favoritesOnly,
+        );
+      }
+
+      final domain = apiPage.toDomainModel();
+      return domain;
+    } on EmptySearchResultFavQsException catch (_) {
+      throw EmptySearchResultException();
+    }
+  }
+
   Future<Quote> getQuoteDetails(int id) async {
     final cachedQuote = await _localStorage.getQuote(id);
     if (cachedQuote != null) {
