@@ -47,7 +47,48 @@ class QuoteDetailsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StyledStatusBar.dark(
-      child: Placeholder(),
+      child: BlocBuilder<QuoteDetailsCubit, QuoteDetailsState>(
+        builder: (context, state) {
+          return WillPopScope(
+            onWillPop: () async {
+              // 1
+              final displayedQuote =
+                  state is QuoteDetailsSuccess ? state.quote : null;
+              Navigator.of(context).pop(displayedQuote);
+              return false;
+            },
+            child: Scaffold(
+              // 2
+              appBar: state is QuoteDetailsSuccess
+                  ? _QuoteActionsAppBar(
+                      quote: state.quote,
+                      shareableLinkGenerator: shareableLinkGenerator,
+                    )
+                  : null,
+
+              body: SafeArea(
+                child: Padding(
+                    padding:
+                        EdgeInsets.all(WonderTheme.of(context).screenMargin),
+                    // 3
+                    child: state is QuoteDetailsSuccess
+                        ? _Quote(quote: state.quote)
+                        : state is QuoteDetailsFailure
+                            ? ExceptionIndicator(
+                                onTryAgain: () {
+                                  // 4
+                                  final cubit =
+                                      context.read<QuoteDetailsCubit>();
+                                  cubit.refetch();
+                                },
+                              )
+                            // 5
+                            : const CenteredCircularProgressIndicator()),
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 }
