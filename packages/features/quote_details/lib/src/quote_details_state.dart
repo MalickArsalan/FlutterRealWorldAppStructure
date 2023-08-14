@@ -16,8 +16,8 @@ class QuoteDetailsInProgress extends QuoteDetailsState {
   List<Object?> get props => [];
 }
 
-class QuoteDetailSuccess extends QuoteDetailsState {
-  const QuoteDetailSuccess({
+class QuoteDetailsSuccess extends QuoteDetailsState {
+  const QuoteDetailsSuccess({
     required this.quote,
     // TODO: Receive new property.
   });

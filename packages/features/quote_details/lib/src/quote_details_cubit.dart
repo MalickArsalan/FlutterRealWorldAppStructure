@@ -29,7 +29,7 @@ class QuoteDetailsCubit extends Cubit<QuoteDetailsState> {
       // 1
       final quote = await quoteRepository.getQuoteDetails(quoteId);
       // 2
-      emit(QuoteDetailSuccess(quote: quote));
+      emit(QuoteDetailsSuccess(quote: quote));
     } catch (error) {
       emit(const QuoteDetailsFailure());
     }
