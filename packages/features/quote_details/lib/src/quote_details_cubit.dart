@@ -37,6 +37,10 @@ class QuoteDetailsCubit extends Cubit<QuoteDetailsState> {
 
   void refetch() async {
     // TODO: Add a body to refetch().
+    // 1
+    emit(const QuoteDetailsInProgress());
+    // 2
+    _fetchQuoteDetails();
   }
 
   void upvoteQuote() async {
