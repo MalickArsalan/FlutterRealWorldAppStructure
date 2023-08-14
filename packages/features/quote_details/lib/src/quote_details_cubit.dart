@@ -25,6 +25,14 @@ class QuoteDetailsCubit extends Cubit<QuoteDetailsState> {
 
   void _fetchQuoteDetails() async {
     // TODO: Fetch data from QuoteRepository.
+    try {
+      // 1
+      final quote = await quoteRepository.getQuoteDetails(quoteId);
+      // 2
+      emit(QuoteDetailSuccess(quote: quote));
+    } catch (error) {
+      emit(const QuoteDetailsFailure());
+    }
   }
 
   void refetch() async {
