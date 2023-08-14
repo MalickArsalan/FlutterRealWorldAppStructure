@@ -3,12 +3,12 @@ part of 'quote_details_cubit.dart';
 // TODO: Create models for all possible screen states.
 
 // 1
-abstract class QuoteDetailListState extends Equatable {
-  const QuoteDetailListState();
+abstract class QuoteDetailState extends Equatable {
+  const QuoteDetailState();
 }
 
 // 2
-class QuoteDetailsInProgress extends QuoteDetailListState {
+class QuoteDetailsInProgress extends QuoteDetailState {
   const QuoteDetailsInProgress();
 
 // 3
@@ -16,7 +16,7 @@ class QuoteDetailsInProgress extends QuoteDetailListState {
   List<Object?> get props => [];
 }
 
-class QuoteDetailSuccess extends QuoteDetailListState {
+class QuoteDetailSuccess extends QuoteDetailState {
   const QuoteDetailSuccess({
     required this.quote,
     // TODO: Receive new property.
@@ -33,7 +33,7 @@ class QuoteDetailSuccess extends QuoteDetailListState {
       ];
 }
 
-class QuoteDetailsFailure extends QuoteDetailListState {
+class QuoteDetailsFailure extends QuoteDetailState {
   const QuoteDetailsFailure();
 
   @override
