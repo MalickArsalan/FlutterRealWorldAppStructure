@@ -6,3 +6,48 @@ import 'package:quote_repository/quote_repository.dart';
 part 'quote_details_state.dart';
 
 // TODO: Create the cubit.
+
+// 1
+class QuoteDetailsCubit extends Cubit<QuoteDetailsState> {
+  QuoteDetailsCubit({
+    required this.quoteId,
+    required this.quoteRepository,
+  }) : super(
+          // 2
+          const QuoteDetailsInProgress(),
+        ) {
+    _fetchQuoteDetails();
+  }
+
+  final int quoteId;
+  // 3
+  final QuoteRepository quoteRepository;
+
+  void _fetchQuoteDetails() async {
+    // TODO: Fetch data from QuoteRepository.
+  }
+
+  void refetch() async {
+    // TODO: Add a body to refetch().
+  }
+
+  void upvoteQuote() async {
+    // TODO: Add a body to upvoteQuote().
+  }
+
+  void downvoteQuote() async {
+    // TODO: Challenge.
+  }
+
+  void unvoteQuote() async {
+    // TODO: Challenge.
+  }
+
+  void favoriteQuote() async {
+    // TODO: Challenge.
+  }
+
+  void unfavoriteQuote() async {
+    // TODO: Challenge.
+  }
+}
