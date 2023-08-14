@@ -45,6 +45,12 @@ class QuoteDetailsCubit extends Cubit<QuoteDetailsState> {
 
   void upvoteQuote() async {
     // TODO: Add a body to upvoteQuote().
+    try {
+      final updatedQuote = await quoteRepository.upvoteQuote(quoteId);
+      emit(QuoteDetailsSuccess(quote: updatedQuote));
+    } catch (error) {
+      // TODO: Handle error
+    }
   }
 
   void downvoteQuote() async {
