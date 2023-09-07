@@ -20,16 +20,19 @@ class QuoteDetailsSuccess extends QuoteDetailsState {
   const QuoteDetailsSuccess({
     required this.quote,
     // TODO: Receive new property.
+    this.quoteUpdateError,
   });
 
   // 4
   final Quote quote;
   // TODO: Add new property.
+  final dynamic quoteUpdateError;
 
   @override
   List<Object?> get props => [
         quote,
         // TODO: List new property.
+        quoteUpdateError,
       ];
 }
 

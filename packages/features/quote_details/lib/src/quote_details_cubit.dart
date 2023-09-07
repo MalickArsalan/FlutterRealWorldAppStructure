@@ -50,6 +50,18 @@ class QuoteDetailsCubit extends Cubit<QuoteDetailsState> {
       emit(QuoteDetailsSuccess(quote: updatedQuote));
     } catch (error) {
       // TODO: Handle error
+      // 1
+      final lastState = state;
+      // 2
+      if (lastState is QuoteDetailsSuccess) {
+        // 3
+        emit(
+          QuoteDetailsSuccess(
+            quote: lastState.quote,
+            quoteUpdateError: error,
+          ),
+        );
+      }
     }
   }
 

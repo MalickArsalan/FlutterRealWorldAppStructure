@@ -51,7 +51,26 @@ class QuoteDetailsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StyledStatusBar.dark(
-      child: BlocBuilder<QuoteDetailsCubit, QuoteDetailsState>(
+      child: BlocConsumer<QuoteDetailsCubit, QuoteDetailsState>(
+        listener: (context, state) {
+          final quoteUpdateError =
+              state is QuoteDetailsSuccess ? state.quoteUpdateError : null;
+          if (quoteUpdateError != null) {
+            // 1
+            final snackBar =
+                quoteUpdateError is UserAuthenticationRequiredException
+                    ? const AuthenticationRequiredErrorSnackBar()
+                    : const GenericErrorSnackBar();
+            ScaffoldMessenger.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(snackBar);
+
+            // 2
+            if (quoteUpdateError is UserAuthenticationRequiredException) {
+              onAuthenticationError();
+            }
+          }
+        },
         builder: (context, state) {
           return WillPopScope(
             onWillPop: () async {
