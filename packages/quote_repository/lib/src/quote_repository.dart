@@ -31,18 +31,18 @@ class QuoteRepository {
     final isFetchPolicyNetworkOnly =
         fetchPolicy == QuoteListPageFetchPolicy.networkPreferably;
 
-    // 1
+    // 2.4
     final shouldSkipCacheLookup =
         isFilteringByTag || isSearching || isFetchPolicyNetworkOnly;
     if (shouldSkipCacheLookup) {
-      // 2
+      // 2.5
       final freshPage = await _getQuoteListPageFromNetwork(
         pageNumber,
         tag: tag,
         searchTerm: searchTerm,
         favouritedByUsername: favoritedByUsername,
       );
-      // 3
+      // 2.6
       yield freshPage;
     } else {
       // TODO: Cover other fetch policies
@@ -50,7 +50,7 @@ class QuoteRepository {
 
       final cachedPage = await _localStorage.getQuoteListPage(
         pageNumber,
-        // 1
+        // 2.7
         isFilteringByFavorites,
       );
 
@@ -60,14 +60,14 @@ class QuoteRepository {
       final isFetchPolicyCachePreferably =
           fetchPolicy == QuoteListPageFetchPolicy.cachePreferably;
 
-      // 2
+      // 2.8
       final shouldEmitCachedPageInAdvance =
           isFetchPolicyCacheAndNetwork || isFetchPolicyCachePreferably;
 
       if (shouldEmitCachedPageInAdvance && cachedPage != null) {
-        // 3
+        // 2.9
         yield cachedPage.toDomainModel();
-        // 4
+        // 2.10
         if (isFetchPolicyCachePreferably) {
           return;
         }
@@ -81,13 +81,13 @@ class QuoteRepository {
 
         yield freshPage;
       } catch (_) {
-        // 1
+        // 2.11
         final isFetchPolicyNetworkPreferably =
             fetchPolicy == QuoteListPageFetchPolicy.networkPreferably;
         if (cachedPage != null && isFetchPolicyNetworkPreferably) {
           yield cachedPage.toDomainModel();
         }
-        // 2
+        // 2.12
         rethrow;
       }
     }
@@ -103,7 +103,7 @@ class QuoteRepository {
   */
   ///
 
-  // 1
+  // 2.1
   Future<QuoteListPage> _getQuoteListPageFromNetwork(
     int pageNumber, {
     Tag? tag,
@@ -111,7 +111,7 @@ class QuoteRepository {
     String? favouritedByUsername = '',
   }) async {
     try {
-      // 2
+      // 2.2
       final apiPage = await remoteApi.getQuoteListPage(
         pageNumber,
         tag: tag?.toRemoteModel(),
@@ -123,9 +123,9 @@ class QuoteRepository {
       final favoritesOnly = favouritedByUsername != null;
 
       final shouldStoreOnCache = !isFiltering;
-      // 3
+      // 2.3
       if (shouldStoreOnCache) {
-        // 4
+        // 2.4
         final shouldEmptyCache = pageNumber == 1;
         if (shouldEmptyCache) {
           await _localStorage.clearQuoteListPageList(favoritesOnly);
