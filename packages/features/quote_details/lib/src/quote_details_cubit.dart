@@ -7,28 +7,28 @@ part 'quote_details_state.dart';
 
 // TODO: Create the cubit.
 
-// 1
+// 3.5
 class QuoteDetailsCubit extends Cubit<QuoteDetailsState> {
   QuoteDetailsCubit({
     required this.quoteId,
     required this.quoteRepository,
   }) : super(
-          // 2
+          // 3.6
           const QuoteDetailsInProgress(),
         ) {
     _fetchQuoteDetails();
   }
 
   final int quoteId;
-  // 3
+  // 3.7
   final QuoteRepository quoteRepository;
 
   void _fetchQuoteDetails() async {
     // TODO: Fetch data from QuoteRepository.
     try {
-      // 1
+      // 3.8
       final quote = await quoteRepository.getQuoteDetails(quoteId);
-      // 2
+      // 3.9
       emit(QuoteDetailsSuccess(quote: quote));
     } catch (error) {
       emit(const QuoteDetailsFailure());
@@ -37,9 +37,9 @@ class QuoteDetailsCubit extends Cubit<QuoteDetailsState> {
 
   void refetch() async {
     // TODO: Add a body to refetch().
-    // 1
+    // 3.10
     emit(const QuoteDetailsInProgress());
-    // 2
+    // 3.11
     _fetchQuoteDetails();
   }
 
@@ -50,11 +50,11 @@ class QuoteDetailsCubit extends Cubit<QuoteDetailsState> {
       emit(QuoteDetailsSuccess(quote: updatedQuote));
     } catch (error) {
       // TODO: Handle error
-      // 1
+      // 3.18
       final lastState = state;
-      // 2
+      // 3.19
       if (lastState is QuoteDetailsSuccess) {
-        // 3
+        // 3.20
         emit(
           QuoteDetailsSuccess(
             quote: lastState.quote,

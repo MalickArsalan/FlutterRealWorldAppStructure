@@ -56,11 +56,12 @@ class QuoteDetailsView extends StatelessWidget {
           final quoteUpdateError =
               state is QuoteDetailsSuccess ? state.quoteUpdateError : null;
           if (quoteUpdateError != null) {
-            // 1
+            // 3.21
             final snackBar =
                 quoteUpdateError is UserAuthenticationRequiredException
                     ? const AuthenticationRequiredErrorSnackBar()
                     : const GenericErrorSnackBar();
+
             ScaffoldMessenger.of(context)
               ..hideCurrentSnackBar()
               ..showSnackBar(snackBar);
@@ -74,14 +75,14 @@ class QuoteDetailsView extends StatelessWidget {
         builder: (context, state) {
           return WillPopScope(
             onWillPop: () async {
-              // 1
+              // 3.12
               final displayedQuote =
                   state is QuoteDetailsSuccess ? state.quote : null;
               Navigator.of(context).pop(displayedQuote);
               return false;
             },
             child: Scaffold(
-              // 2
+              // 3.13
               appBar: state is QuoteDetailsSuccess
                   ? _QuoteActionsAppBar(
                       quote: state.quote,
@@ -93,19 +94,19 @@ class QuoteDetailsView extends StatelessWidget {
                 child: Padding(
                     padding:
                         EdgeInsets.all(WonderTheme.of(context).screenMargin),
-                    // 3
+                    // 3.14
                     child: state is QuoteDetailsSuccess
                         ? _Quote(quote: state.quote)
                         : state is QuoteDetailsFailure
                             ? ExceptionIndicator(
                                 onTryAgain: () {
-                                  // 4
+                                  // 3.15
                                   final cubit =
                                       context.read<QuoteDetailsCubit>();
                                   cubit.refetch();
                                 },
                               )
-                            // 5
+                            // 3.16
                             : const CenteredCircularProgressIndicator()),
               ),
             ),
