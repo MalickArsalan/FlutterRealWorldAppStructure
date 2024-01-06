@@ -44,89 +44,42 @@ class QuoteDetailsCubit extends Cubit<QuoteDetailsState> {
   }
 
   void upvoteQuote() async {
-    // TODO: Add a body to upvoteQuote().
-    try {
-      final updatedQuote = await quoteRepository.upvoteQuote(quoteId);
-      emit(QuoteDetailsSuccess(quote: updatedQuote));
-    } catch (error) {
-      // TODO: Handle error
-      // 3.18
-      final lastState = state;
-      // 3.19
-      if (lastState is QuoteDetailsSuccess) {
-        // 3.20
-        emit(
-          QuoteDetailsSuccess(
-            quote: lastState.quote,
-            quoteUpdateError: error,
-          ),
-        );
-      }
-    }
+    await _executeQuoteUpdateOperation(
+        () => quoteRepository.upvoteQuote(quoteId));
   }
 
   void downvoteQuote() async {
-    // TODO: Challenge.
-
-    try {
-      final updatedQuote = await quoteRepository.downvoteQuote(quoteId);
-      emit(QuoteDetailsSuccess(quote: updatedQuote));
-    } catch (error) {
-      final lastState = state;
-      if (lastState is QuoteDetailsSuccess) {
-        QuoteDetailsSuccess(
-          quote: lastState.quote,
-          quoteUpdateError: error,
-        );
-      }
-    }
+    await _executeQuoteUpdateOperation(
+        () => quoteRepository.downvoteQuote(quoteId));
   }
 
   void unvoteQuote() async {
-    // TODO: Challenge.
-    try {
-      final updatedQuote = await quoteRepository.unvoteQuote(quoteId);
-      emit(QuoteDetailsSuccess(quote: updatedQuote));
-    } catch (error) {
-      final lastState = state;
-      if (lastState is QuoteDetailsSuccess) {
-        QuoteDetailsSuccess(
-          quote: lastState.quote,
-          quoteUpdateError: error,
-        );
-      }
-    }
+    await _executeQuoteUpdateOperation(
+        () => quoteRepository.unvoteQuote(quoteId));
   }
 
   void favoriteQuote() async {
-    // TODO: Challenge.
-
-    try {
-      final updatedQuote = await quoteRepository.favoriteQuote(quoteId);
-      emit(QuoteDetailsSuccess(quote: updatedQuote));
-    } catch (error) {
-      final lastState = state;
-      if (lastState is QuoteDetailsSuccess) {
-        QuoteDetailsSuccess(
-          quote: lastState.quote,
-          quoteUpdateError: error,
-        );
-      }
-    }
+    await _executeQuoteUpdateOperation(
+        () => quoteRepository.favoriteQuote(quoteId));
   }
 
   void unfavoriteQuote() async {
-    // TODO: Challenge.
+    await _executeQuoteUpdateOperation(
+        () => quoteRepository.unfavoriteQuote(quoteId));
+  }
+
+  Future<void> _executeQuoteUpdateOperation(
+      Future<Quote> Function() updateQuote) async {
     try {
-      final updatedQuote = await quoteRepository.unfavoriteQuote(quoteId);
+      final updatedQuote = await updateQuote();
       emit(QuoteDetailsSuccess(quote: updatedQuote));
     } catch (error) {
       final lastState = state;
       if (lastState is QuoteDetailsSuccess) {
-        QuoteDetailsSuccess(
+        emit(QuoteDetailsSuccess(
           quote: lastState.quote,
           quoteUpdateError: error,
-        );
+        ));
       }
     }
   }
