@@ -18,3 +18,36 @@ enum SubmissionStatus {
   /// Used to show a more specific error telling the user they got the email and/or password wrong.
   invalidCredentialsError,
 }
+
+class SignInState extends Equatable {
+  const SignInState(
+      {
+      // 1
+      this.email = const Email.unvalidated(),
+      this.password = const Password.unvalidated(),
+      // 2
+      this.submissionStatus});
+
+  final Email email;
+  final Password password;
+  final SubmissionStatus? submissionStatus;
+
+  // 3
+  SignInState copyWith(
+      {Email? email, Password? password, SubmissionStatus? submissionStatus}) {
+    return SignInState(
+      email: email ?? this.email,
+      password: password ?? this.password,
+      submissionStatus: submissionStatus,
+    );
+  }
+
+  // 4
+  @override
+  // TODO: implement props
+  List<Object?> get props => [
+        email,
+        password,
+        submissionStatus,
+      ];
+}
