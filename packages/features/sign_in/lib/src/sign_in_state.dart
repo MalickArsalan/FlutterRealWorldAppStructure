@@ -22,17 +22,17 @@ enum SubmissionStatus {
 class SignInState extends Equatable {
   const SignInState(
       {
-      // 1
+      // 4.1
       this.email = const Email.unvalidated(),
       this.password = const Password.unvalidated(),
-      // 2
+      // 4.2
       this.submissionStatus});
 
   final Email email;
   final Password password;
   final SubmissionStatus? submissionStatus;
 
-  // 3
+  // 4.3
   SignInState copyWith(
       {Email? email, Password? password, SubmissionStatus? submissionStatus}) {
     return SignInState(
@@ -42,7 +42,7 @@ class SignInState extends Equatable {
     );
   }
 
-  // 4
+  // 4.4
   @override
   // TODO: implement props
   List<Object?> get props => [
