@@ -26,7 +26,7 @@ class QuoteDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
+    return BlocProvider<QuoteDetailsCubit>(
       create: (_) =>
           QuoteDetailsCubit(quoteId: quoteId, quoteRepository: quoteRepository),
       child: QuoteDetailsView(
@@ -66,7 +66,7 @@ class QuoteDetailsView extends StatelessWidget {
               ..hideCurrentSnackBar()
               ..showSnackBar(snackBar);
 
-            // 2
+            // 3.22
             if (quoteUpdateError is UserAuthenticationRequiredException) {
               onAuthenticationError();
             }

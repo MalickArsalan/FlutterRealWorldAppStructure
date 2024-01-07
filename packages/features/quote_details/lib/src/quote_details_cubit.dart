@@ -23,7 +23,7 @@ class QuoteDetailsCubit extends Cubit<QuoteDetailsState> {
   // 3.7
   final QuoteRepository quoteRepository;
 
-  void _fetchQuoteDetails() async {
+  Future<void> _fetchQuoteDetails() async {
     // TODO: Fetch data from QuoteRepository.
     try {
       // 3.8

@@ -29,8 +29,7 @@ class QuoteRepository {
     final isFilteringByTag = tag != null;
     final isSearching = searchTerm.isNotEmpty;
     final isFetchPolicyNetworkOnly =
-        fetchPolicy == QuoteListPageFetchPolicy.networkPreferably;
-
+        fetchPolicy == QuoteListPageFetchPolicy.networkOnly;
     // 2.5
     final shouldSkipCacheLookup =
         isFilteringByTag || isSearching || isFetchPolicyNetworkOnly;
@@ -40,7 +39,7 @@ class QuoteRepository {
         pageNumber,
         tag: tag,
         searchTerm: searchTerm,
-        favouritedByUsername: favoritedByUsername,
+        favoritedByUsername: favoritedByUsername,
       );
       // 2.7
       yield freshPage;
@@ -65,9 +64,7 @@ class QuoteRepository {
           isFetchPolicyCacheAndNetwork || isFetchPolicyCachePreferably;
 
       if (shouldEmitCachedPageInAdvance && cachedPage != null) {
-        // 2.10
         yield cachedPage.toDomainModel();
-        // 2.11
         if (isFetchPolicyCachePreferably) {
           return;
         }
@@ -76,7 +73,7 @@ class QuoteRepository {
       try {
         final freshPage = await _getQuoteListPageFromNetwork(
           pageNumber,
-          favouritedByUsername: favoritedByUsername,
+          favoritedByUsername: favoritedByUsername,
         );
 
         yield freshPage;
@@ -86,6 +83,7 @@ class QuoteRepository {
             fetchPolicy == QuoteListPageFetchPolicy.networkPreferably;
         if (cachedPage != null && isFetchPolicyNetworkPreferably) {
           yield cachedPage.toDomainModel();
+          return;
         }
         // 2.13
         rethrow;
@@ -108,7 +106,7 @@ class QuoteRepository {
     int pageNumber, {
     Tag? tag,
     String searchTerm = '',
-    String? favouritedByUsername = '',
+    String? favoritedByUsername,
   }) async {
     try {
       // 2.2
@@ -116,11 +114,11 @@ class QuoteRepository {
         pageNumber,
         tag: tag?.toRemoteModel(),
         searchTerm: searchTerm,
-        favoritedByUsername: favouritedByUsername,
+        favoritedByUsername: favoritedByUsername,
       );
 
       final isFiltering = tag != null || searchTerm.isNotEmpty;
-      final favoritesOnly = favouritedByUsername != null;
+      final favoritesOnly = favoritedByUsername != null;
 
       final shouldStoreOnCache = !isFiltering;
       // 2.3
