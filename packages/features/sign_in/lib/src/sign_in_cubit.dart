@@ -42,13 +42,46 @@ class SignInCubit extends Cubit<SignInState> {
 
   void onPasswordChanged(String newValue) {
     // TODO: Handle the user changing the value of the password field.
+    // 4.10
+    final previousScreenState = state;
+    // 4.11
+    final previousPasswordState = previousScreenState.password;
+
+    final shouldValidate = previousPasswordState.invalid;
+    // 4.12
+    final newPasswordState = shouldValidate
+        ? Password.validated(newValue)
+        : Password.unvalidated(newValue);
+
+    // TODO: Emit the new state.
+    // 4.13
+    final newScreenState = state.copyWith(password: newPasswordState);
+
+    // 4.14
+    emit(newScreenState);
   }
 
   void onPasswordUnfocussed() {
     // TODO: Handle the user taking the focus out of the password field.
+    final previousScreenState = state;
+    final previousPasswordState = previousScreenState.password;
+
+    // 4.15
+    final previousPasswordValue = previousPasswordState.value;
+
+    // 4.16
+    final newPasswordValue = Password.validated(previousPasswordValue);
+
+    // 4.17
+    final newScreenState =
+        previousScreenState.copyWith(password: newPasswordValue);
+
+    emit(newScreenState);
   }
 
   void onSubmit() async {
     // TODO: Handle the submit button's tap.
   }
+
+  // TODO: Emit the new state.
 }
