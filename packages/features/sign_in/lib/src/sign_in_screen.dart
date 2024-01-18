@@ -98,6 +98,36 @@ class _SignInForm extends StatefulWidget {
 
 class _SignInFormState extends State<_SignInForm> {
   // TODO: Create the FocusNodes.
+  // 4.18
+  final _emailFocusNode = FocusNode();
+  final _passwordFocusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    // 4.19
+    final cubit = context.read<SignInCubit>();
+    _emailFocusNode.addListener(() {
+      //  4.20
+      if (!_emailFocusNode.hasFocus) {
+        // 4.21
+        cubit.onEmailUnfocused();
+      }
+    });
+    _passwordFocusNode.addListener(() {
+      if (!_passwordFocusNode.hasFocus) {
+        cubit.onPasswordUnfocussed();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    // 4.22
+    _emailFocusNode.dispose();
+    _passwordFocusNode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -111,13 +141,14 @@ class _SignInFormState extends State<_SignInForm> {
       builder: (context, state) {
         final emailError = state.email.invalid ? state.email.error : null;
         // TODO: Check for errors in the password state.
-        final isSubmissionInProgress = false;
+        const isSubmissionInProgress = false;
 
         final cubit = context.read<SignInCubit>();
         return Column(
           children: <Widget>[
             TextField(
               // TODO: Attach _emailFocusNode.
+              focusNode: _emailFocusNode,
               onChanged: cubit.onEmailChanged,
               textInputAction: TextInputAction.next,
               autocorrect: false,
@@ -139,6 +170,7 @@ class _SignInFormState extends State<_SignInForm> {
             ),
             TextField(
               // TODO: Attach _passwordFocusNode.
+              focusNode: _passwordFocusNode,
               // TODO: Forward password change events to the Cubit.
               obscureText: true,
               // TODO: Forward the onEditingComplete to the Cubit.
