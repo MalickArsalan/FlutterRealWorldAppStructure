@@ -141,6 +141,8 @@ class _SignInFormState extends State<_SignInForm> {
       builder: (context, state) {
         final emailError = state.email.invalid ? state.email.error : null;
         // TODO: Check for errors in the password state.
+        final passwordError =
+            state.password.invalid ? state.password.error : null;
         const isSubmissionInProgress = false;
 
         final cubit = context.read<SignInCubit>();
@@ -176,13 +178,21 @@ class _SignInFormState extends State<_SignInForm> {
               obscureText: true,
               // TODO: Forward the onEditingComplete to the Cubit.
               decoration: InputDecoration(
-                suffixIcon: const Icon(
-                  Icons.password,
-                ),
-                enabled: !isSubmissionInProgress,
-                labelText: l10n.passwordTextFieldLabel,
-                // TODO: Display the password validation error if any.
-              ),
+                  suffixIcon: const Icon(
+                    Icons.password,
+                  ),
+                  enabled: !isSubmissionInProgress,
+                  labelText: l10n.passwordTextFieldLabel,
+                  // TODO: Display the password validation error if any.
+                  // 4.23
+                  errorText: passwordError == null
+                      // 4.24
+                      ? null
+                      // 4.25
+                      : (passwordError == PasswordValidationError.empty
+                          // 4.26
+                          ? l10n.passwordTextFieldEmptyErrorMessage
+                          : l10n.passwordTextFieldInvalidErrorMessage)),
             ),
             TextButton(
               child: Text(
