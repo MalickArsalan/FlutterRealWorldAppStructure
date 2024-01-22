@@ -1,3 +1,4 @@
+import 'package:domain_models/domain_models.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:form_fields/form_fields.dart';
@@ -81,6 +82,52 @@ class SignInCubit extends Cubit<SignInState> {
 
   void onSubmit() async {
     // TODO: Handle the submit button's tap.
+    // 4.27
+    final email = Email.validated(state.email.value);
+    final password = Password.validated(state.password.value);
+
+    // 4.28
+    final isFormValid = Formz.validate([
+      email,
+      password,
+    ]).isInvalid;
+
+    // 4.29
+    final newState = state.copyWith(
+      email: email,
+      password: password,
+      // 4.30
+      submissionStatus: isFormValid ? SubmissionStatus.inProgress : null,
+    );
+
+    // 4.31
+    emit(newState);
+
+    // TODO: Submit the data.
+    // 4.32
+    if (isFormValid) {
+      try {
+        // 4.33
+        await userRepository.signIn(
+          email.value,
+          password.value,
+        );
+
+        // 4.34
+        final newState = state.copyWith(
+          submissionStatus: SubmissionStatus.success,
+        );
+        emit(newState);
+      } catch (error) {
+        final newState = state.copyWith(
+          // 4.35
+          submissionStatus: error is InvalidCredentialsException
+              ? SubmissionStatus.invalidCredentialsError
+              : SubmissionStatus.genericError,
+        );
+        emit(newState);
+      }
+    }
   }
 
   // TODO: Emit the new state.
