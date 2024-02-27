@@ -143,7 +143,8 @@ class _SignInFormState extends State<_SignInForm> {
         // TODO: Check for errors in the password state.
         final passwordError =
             state.password.invalid ? state.password.error : null;
-        const isSubmissionInProgress = false;
+        final isSubmissionInProgress =
+            state.submissionStatus == SubmissionStatus.inProgress;
 
         final cubit = context.read<SignInCubit>();
         return Column(
