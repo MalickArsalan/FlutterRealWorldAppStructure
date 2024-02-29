@@ -129,6 +129,4 @@ class SignInCubit extends Cubit<SignInState> {
       }
     }
   }
-
-  // TODO: Emit the new state.
 }
