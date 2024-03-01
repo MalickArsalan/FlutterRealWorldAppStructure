@@ -90,7 +90,7 @@ class SignInCubit extends Cubit<SignInState> {
     final isFormValid = Formz.validate([
       email,
       password,
-    ]).isInvalid;
+    ]).isValid;
 
     // 4.29
     final newState = state.copyWith(
